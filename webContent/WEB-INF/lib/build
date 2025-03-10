@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MyWebApp" default="war" basedir=".">
+    <!-- Define project properties -->
+    <property name="src.dir" location="src"/>
+    <property name="web.dir" location="WebContent"/>
+    <property name="build.dir" location="build"/>
+    <property name="classes.dir" location="${build.dir}/WEB-INF/classes"/>
+    <property name="dist.dir" location="dist"/>
+    
+    <!-- Clean target: Deletes build and distribution directories -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+    
+    <!-- Init target: Creates necessary directories -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+    
+    <!-- Compile target: Compiles Java source code -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false">
+            <!-- If external libraries are needed, ensure they are in WEBContent/WEB-INF/lib -->
+            <classpath>
+                <fileset dir="${web.dir}/WEB-INF/lib" includes="*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <!-- WAR target: Packages the web application into a WAR file -->
+    <target name="war" depends="compile">
+        <war destfile="${dist.dir}/MyWebApp.war" webxml="${web.dir}/WEB-INF/web.xml">
+            <!-- Include all web resources except web.xml (since it's provided separately) -->
+            <fileset dir="${web.dir}" excludes="WEB-INF/web.xml"/>
+            <!-- Include libraries -->
+            <lib dir="${web.dir}/WEB-INF/lib"/>
+            <!-- Include compiled classes -->
+            <classes dir="${classes.dir}"/>
+        </war>
+    </target>
+</project>
